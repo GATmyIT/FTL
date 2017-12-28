@@ -6,4 +6,7 @@ authors = ["Mcat12 <mark@pi-hole.net>"]
 [lib]
 crate-type = ["staticlib"]
 
+[profile.release]
+lto = true
+
 [dependencies]
