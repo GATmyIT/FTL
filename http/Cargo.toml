@@ -1,0 +1,9 @@
+[package]
+name = "ftl_http"
+version = "0.1.0"
+authors = ["Mcat12 <mark@pi-hole.net>"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]

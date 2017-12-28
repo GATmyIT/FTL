@@ -18,6 +18,10 @@ GIT_VERSION := $(shell git --no-pager describe --tags --always --dirty)
 GIT_DATE := $(shell git --no-pager show --date=short --format="%ai" --name-only | head -n 1)
 GIT_TAG := $(shell git describe --tags --abbrev=0)
 
+# The ?= allows the value to be overriden by environment variables.
+CC?=gcc
+TARGET?=x86_64-unknown-linux-gnu
+
 # -fstack-protector: The program will be resistant to having its stack overflowed
 # -D_FORTIFY_SOURCE=2 and -O1 or higher: This causes certain unsafe glibc functions to be replaced with their safer counterparts
 # -Wl,-z,relro: reduces the possible areas of memory in a program that can be used by an attacker that performs a successful memory corruption exploit
@@ -27,7 +31,6 @@ GIT_TAG := $(shell git describe --tags --abbrev=0)
 # _FILE_OFFSET_BITS=64: used by stat(). Avoids problems with files > 2 GB on 32bit machines
 # -fsanitize=address: AddressSanitizer
 # -fno-omit-frame-pointer: get nicer stacktraces
-CC=gcc
 HARDENING_FLAGS=-fstack-protector -D_FORTIFY_SOURCE=2 -O3 -Wl,-z,relro,-z,now -pie -fPIE
 DEBUG_FLAGS=-rdynamic -fno-omit-frame-pointer #-fsanitize=address
 # -DSQLITE_OMIT_LOAD_EXTENSION: This option omits the entire extension loading mechanism from SQLite, including sqlite3_enable_load_extension() and sqlite3_load_extension() interfaces. (needs -ldl linking option, otherwise)
@@ -36,11 +39,13 @@ DEBUG_FLAGS=-rdynamic -fno-omit-frame-pointer #-fsanitize=address
 # -DSQLITE_OMIT_PROGRESS_CALLBACK: The progress handler callback counter must be checked in the inner loop of the bytecode engine. By omitting this interface, a single conditional is removed from the inner loop of the bytecode engine, helping SQL statements to run slightly faster.
 SQLITEFLAGS=-DSQLITE_OMIT_LOAD_EXTENSION -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_MEMORYDB
 CCFLAGS=-I$(IDIR) -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 $(HARDENING_FLAGS) $(DEBUG_FLAGS) $(CFLAGS) $(SQLITEFLAGS)
-LIBS=-pthread
+LIBS=-pthread -lm -ldl
 
 ODIR =obj
 IDIR =.
 LDIR =lib
+HTTP_DIR=http
+HTTP_LIB=$(HTTP_DIR)/target/$(TARGET)/release/libftl_http.a
 
 _DEPS = $(patsubst %,$(IDIR)/%,$(DEPS))
 
@@ -51,19 +56,23 @@ all: pihole-FTL
 $(ODIR)/%.o: %.c $(_DEPS) | $(ODIR)
 	$(CC) -c -o $@ $< -g3 $(CCFLAGS)
 
+$(HTTP_LIB):
+	(cd $(HTTP_DIR) && cargo build --release --target $(TARGET))
+
 $(ODIR):
 	mkdir -p $(ODIR)
 
 $(ODIR)/sqlite3.o: sqlite3.c
 	$(CC) -c -o $@ $< $(CCFLAGS)
 
-pihole-FTL: $(_OBJ) $(ODIR)/sqlite3.o
+pihole-FTL: $(_OBJ) $(ODIR)/sqlite3.o $(HTTP_LIB)
 	$(CC) -v $(CCFLAGS) -o $@ $^ $(LIBS)
 
 .PHONY: clean force install
 
 clean:
 	rm -f $(ODIR)/*.o pihole-FTL
+	rm -rf $(HTTP_DIR)/target
 
 # recreate version.h when GIT_VERSION changes, uses temporary file version~
 version~: force

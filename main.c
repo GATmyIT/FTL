@@ -14,7 +14,10 @@ char * username;
 bool needGC = false;
 bool needDBGC = false;
 
+extern void hello();
+
 int main (int argc, char* argv[]) {
+	hello();
 	username = getUserName();
 
 	if(argc > 1)
