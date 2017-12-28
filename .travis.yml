@@ -1,4 +1,6 @@
 language: c
+rust:
+  - 1.22.1
 sudo: false
 dist: trusty
 git:
@@ -9,14 +11,15 @@ env:
 matrix:
   include:
   - env:
-    - BUILD_CC="cc"
+    - CC="cc"
     - BIN_NAME="pihole-FTL-linux-x86_64"
     addons:
       apt:
         packages:
         - sqlite3
   - env:
-    - BUILD_CC="arm-linux-gnueabihf-gcc"
+    - CC="arm-linux-gnueabihf-gcc"
+    - TARGET="arm-unknown-linux-gnueabihf"
     - BIN_NAME="pihole-FTL-arm-linux-gnueabihf"
     addons:
       apt:
@@ -25,7 +28,8 @@ matrix:
         - binutils-arm-linux-gnueabihf
         - libc6-dev-armhf-cross
   - env:
-    - BUILD_CC="arm-linux-gnueabi-gcc"
+    - CC="arm-linux-gnueabi-gcc"
+    - TARGET="arm-unknown-linux-gnueabi"
     - BIN_NAME="pihole-FTL-arm-linux-gnueabi"
     addons:
       apt:
@@ -34,7 +38,8 @@ matrix:
         - binutils-arm-linux-gnueabi
         - libc6-dev-armel-cross
   - env:
-    - BUILD_CC="aarch64-linux-gnu-gcc"
+    - CC="aarch64-linux-gnu-gcc"
+    - TARGET="aarch64-unknown-linux-gnu"
     - BIN_NAME="pihole-FTL-aarch64-linux-gnu"
     addons:
       apt:
@@ -43,7 +48,8 @@ matrix:
         - binutils-aarch64-linux-gnu
         - libc6-dev-arm64-cross
   - env:
-    - BUILD_CC="powerpc-linux-gnu-gcc"
+    - CC="powerpc-linux-gnu-gcc"
+    - TARGET="powerpc-unknown-linux-gnu"
     - BIN_NAME="pihole-FTL-powerpc-linux-gnu"
     addons:
       apt:
@@ -52,7 +58,8 @@ matrix:
         - binutils-powerpc-linux-gnu
         - libc6-dev-powerpc-cross
   - env:
-    - BUILD_CC="cc"
+    - CC="cc"
+    - TARGET="i686-unknown-linux-gnu"
     - CFLAGS="-m32"
     - BIN_NAME="pihole-FTL-linux-x86_32"
     addons:
@@ -60,7 +67,8 @@ matrix:
         packages:
         - gcc-multilib
   - env:
-    - BUILD_CC="musl-gcc"
+    - CC="musl-gcc"
+    - TARGET="x86_64-unknown-linux-musl"
     - BIN_NAME="pihole-FTL-musl-linux-x86_64"
     addons:
       apt:
@@ -70,7 +78,7 @@ before_script:
 - mkdir -p "${DEST_DIR}"
 - make clean
 script:
-- make pihole-FTL CC="${BUILD_CC}" CFLAGS="${CFLAGS}"
+- make pihole-FTL
 - file pihole-FTL
 - if [[ "${BIN_NAME}" == "pihole-FTL-linux-x86_64" ]]; then test/run.sh; fi
 - mv pihole-FTL "${DEST_DIR}/${BIN_NAME}"
