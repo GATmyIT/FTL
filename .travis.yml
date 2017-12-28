@@ -12,6 +12,7 @@ matrix:
   include:
   - env:
     - CC="cc"
+    - TARGET="x86_64-unknown-linux-gnu"
     - BIN_NAME="pihole-FTL-linux-x86_64"
     addons:
       apt:
