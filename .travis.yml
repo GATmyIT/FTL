@@ -78,6 +78,7 @@ before_script:
 - mkdir -p "${DEST_DIR}"
 - make clean
 script:
+- 'if [ "$TARGET" != "x86_64-unknown-linux-gnu" ]; then rustup target add "$TARGET"; fi'
 - make pihole-FTL
 - file pihole-FTL
 - if [[ "${BIN_NAME}" == "pihole-FTL-linux-x86_64" ]]; then test/run.sh; fi
