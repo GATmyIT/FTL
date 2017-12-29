@@ -183,15 +183,15 @@ load 'libs/bats-support/load'
   [[ "${lines[@]}" == *"INSERT INTO \"ftl\" VALUES(0,1);"* ]]
 }
 
-@test "HTTP server: FTL responding correctly to HEAD request" {
-  run bash -c "curl --head -s 127.0.0.1:4747"
-  echo "output: ${lines[@]}"
-  echo "curl exit code: ${status}"
-  [[ ${lines[0]} == "HTTP/1.0 200 OK" ]]
-  [[ ${lines[1]} == "Server: FTL" ]]
-  [[ ${lines[2]} == "" ]]
-  [[ "${status}" -eq 0 ]]
-}
+#@test "HTTP server: FTL responding correctly to HEAD request" {
+#  run bash -c "curl --head -s 127.0.0.1:4747"
+#  echo "output: ${lines[@]}"
+#  echo "curl exit code: ${status}"
+#  [[ ${lines[0]} == "HTTP/1.0 200 OK" ]]
+#  [[ ${lines[1]} == "Server: FTL" ]]
+#  [[ ${lines[2]} == "" ]]
+#  [[ "${status}" -eq 0 ]]
+#}
 
 @test "HTTP server: FTL responding correctly to GET request" {
   run bash -c "curl -s 127.0.0.1:4747"
@@ -200,34 +200,34 @@ load 'libs/bats-support/load'
   [[ "${status}" -eq 0 ]]
 }
 
-@test "API: Correct answer to summary request (including header check)" {
-  run bash -c "curl -si 127.0.0.1:4747/stats/summary"
-  echo "output: ${lines[@]}"
-  echo "curl exit code: ${status}"
-  [[ ${lines[0]} == "HTTP/1.0 200 OK" ]]
-  [[ ${lines[1]} == "Server: FTL" ]]
-  [[ ${lines[2]} == "Cache-Control: no-cache" ]]
-  [[ ${lines[3]} == "Access-Control-Allow-Origin: *" ]]
-  [[ ${lines[4]} == "Content-Type: application/json" ]]
-  [[ ${lines[5]} == "{\"domains_being_blocked\":-1,\"dns_queries_today\":7,\"ads_blocked_today\":2,\"ads_percentage_today\":28.5714,\"unique_domains\":6,\"queries_forwarded\":3,\"queries_cached\":2,\"clients_ever_seen\":3,\"unique_clients\":3,\"status\":\"unknown\"}" ]]
-  [[ "${status}" -eq 0 ]]
-}
+#@test "API: Correct answer to summary request (including header check)" {
+#  run bash -c "curl -si 127.0.0.1:4747/stats/summary"
+#  echo "output: ${lines[@]}"
+#  echo "curl exit code: ${status}"
+#  [[ ${lines[0]} == "HTTP/1.0 200 OK" ]]
+#  [[ ${lines[1]} == "Server: FTL" ]]
+#  [[ ${lines[2]} == "Cache-Control: no-cache" ]]
+#  [[ ${lines[3]} == "Access-Control-Allow-Origin: *" ]]
+#  [[ ${lines[4]} == "Content-Type: application/json" ]]
+#  [[ ${lines[5]} == "{\"domains_being_blocked\":-1,\"dns_queries_today\":7,\"ads_blocked_today\":2,\"ads_percentage_today\":28.5714,\"unique_domains\":6,\"queries_forwarded\":3,\"queries_cached\":2,\"clients_ever_seen\":3,\"unique_clients\":3,\"status\":\"unknown\"}" ]]
+#  [[ "${status}" -eq 0 ]]
+#}
 
-@test "API: Correct answer to top_domains request" {
-  run bash -c "curl -s 127.0.0.1:4747/stats/top_domains"
-  echo "output: ${lines[@]}"
-  echo "curl exit code: ${status}"
-  [[ ${lines[0]} == "{\"top_domains\":{\"play.google.com\":2,\"example.com\":1,\"checkip.dyndns.org\":1,\"raspberrypi\":1},\"dns_queries_today\":7}" ]]
-  [[ "${status}" -eq 0 ]]
-}
+#@test "API: Correct answer to top_domains request" {
+#  run bash -c "curl -s 127.0.0.1:4747/stats/top_domains"
+#  echo "output: ${lines[@]}"
+#  echo "curl exit code: ${status}"
+#  [[ ${lines[0]} == "{\"top_domains\":{\"play.google.com\":2,\"example.com\":1,\"checkip.dyndns.org\":1,\"raspberrypi\":1},\"dns_queries_today\":7}" ]]
+#  [[ "${status}" -eq 0 ]]
+#}
 
-@test "API: Correct answer to top_ads request" {
-  run bash -c "curl -s 127.0.0.1:4747/stats/top_ads"
-  echo "output: ${lines[@]}"
-  echo "curl exit code: ${status}"
-  [[ ${lines[0]} == "{\"top_ads\":{\"addomain.com\":1,\"blacklisted.com\":1},\"ads_blocked_today\":2}" ]]
-  [[ "${status}" -eq 0 ]]
-}
+#@test "API: Correct answer to top_ads request" {
+#  run bash -c "curl -s 127.0.0.1:4747/stats/top_ads"
+#  echo "output: ${lines[@]}"
+#  echo "curl exit code: ${status}"
+#  [[ ${lines[0]} == "{\"top_ads\":{\"addomain.com\":1,\"blacklisted.com\":1},\"ads_blocked_today\":2}" ]]
+#  [[ "${status}" -eq 0 ]]
+#}
 
 @test "Arguments check: Invalid option" {
   run bash -c './pihole-FTL abc'
