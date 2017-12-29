@@ -1,6 +1,7 @@
 language: rust
 rust:
-  - 1.22.1
+  - nightly-2017-12-21
+cache: cargo
 sudo: false
 dist: trusty
 git:

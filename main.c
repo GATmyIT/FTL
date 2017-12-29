@@ -14,10 +14,9 @@ char * username;
 bool needGC = false;
 bool needDBGC = false;
 
-extern void hello();
+extern bool api_main();
 
 int main (int argc, char* argv[]) {
-	hello();
 	username = getUserName();
 
 	if(argc > 1)
@@ -85,9 +84,8 @@ int main (int argc, char* argv[]) {
 	sleepms(100);
 
 	// Start API thread
-	pthread_t api_listenthread;
-	if(pthread_create( &api_listenthread, &attr, api_listening_thread, NULL ) != 0)
-	{
+	bool apiStarted = api_main();
+	if(!apiStarted) {
 		logg("Unable to open API listening thread. Exiting...");
 		killed = 1;
 	}
