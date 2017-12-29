@@ -58,9 +58,7 @@ $(ODIR)/%.o: %.c $(_DEPS) | $(ODIR)
 
 $(HTTP_LIB):
 	echo "$(CC) $(TARGET)"
-	cd $(HTTP_DIR)
-	cargo build --release --target $(TARGET)
-	cd ..
+	cd $(HTTP_DIR); cargo build --release --target $(TARGET)
 
 $(ODIR):
 	mkdir -p $(ODIR)
