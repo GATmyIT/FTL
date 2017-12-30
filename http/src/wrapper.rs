@@ -8,7 +8,7 @@ extern {
 pub fn log(msg: &str) {
     unsafe {
         let c_str = CString::new(msg).unwrap();
-        logg(c_str.as_ptr() as *const libc::c_char);
+        logg(c_str.as_ptr());
     }
 }
 
