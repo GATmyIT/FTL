@@ -1,7 +1,10 @@
 language: rust
 rust:
   - nightly-2017-12-21
-cache: cargo
+cache:
+  directories:
+    - /home/travis/.cargo
+    - http/target
 sudo: false
 dist: trusty
 git:
