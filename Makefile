@@ -74,6 +74,9 @@ clean:
 	rm -f $(ODIR)/*.o pihole-FTL
 	rm -rf $(HTTP_DIR)/target
 
+clean-C:
+	rm -f $(ODIR)/*.o pihole-FTL
+
 # recreate version.h when GIT_VERSION changes, uses temporary file version~
 version~: force
 	@echo '$(GIT_BRANCH) $(GIT_VERSION) $(GIT_DATE) $(GIT_TAG)' | cmp -s - $@ || echo '$(GIT_BRANCH) $(GIT_VERSION) $(GIT_DATE) $(GIT_TAG)' > $@
