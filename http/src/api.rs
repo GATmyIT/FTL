@@ -1,8 +1,8 @@
 use rocket;
-use rocket::config::{Config, Environment};
+use rocket::config::{Config, Environment, LoggingLevel};
 use std::thread;
 use std::error::Error;
-use wrapper::log;
+use wrapper::{log, is_debug};
 
 #[get("/")]
 fn index() -> &'static str {
@@ -14,14 +14,25 @@ pub extern fn api_main() -> bool {
     thread::Builder::new().name("API listener".to_owned()).spawn(move || {
         log("Starting API");
 
-        let config = match Config::build(Environment::Production).port(4747).finalize() {
-            Ok(c) => c,
-            Err(e) => {
-                log(&format!("Failed to create the API config: {}", e.description()));
-                return;
-            }
+        // todo: use the `log` crate to make Rocket log through the `wrapper::log` function
+        let logging_level = if is_debug() {
+            LoggingLevel::Debug
+        } else {
+            LoggingLevel::Critical
         };
-        rocket::custom(config, false).mount("/", routes![index]).launch();
+
+        let config = Config::build(Environment::Production)
+            .address("0.0.0.0")
+            .port(4747)
+            .log_level(logging_level)
+            .finalize();
+
+        if let Err(e) = config {
+            log(&format!("Failed to create the API config: {}", e.description()));
+            return;
+        }
+
+        rocket::custom(config.unwrap(), false).mount("/", routes![index]).launch();
 
         log("API stopped");
     }).is_ok()
