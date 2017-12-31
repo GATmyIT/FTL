@@ -56,7 +56,7 @@ all: pihole-FTL
 $(ODIR)/%.o: %.c $(_DEPS) | $(ODIR)
 	$(CC) -c -o $@ $< -g3 $(CCFLAGS)
 
-$(HTTP_LIB):
+$(HTTP_LIB): force
 	cd $(HTTP_DIR); CC=cc cargo build --release --target $(TARGET)
 
 $(ODIR):
