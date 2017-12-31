@@ -49,16 +49,16 @@ matrix:
         - gcc-aarch64-linux-gnu
         - binutils-aarch64-linux-gnu
         - libc6-dev-arm64-cross
-  - env:
-    - TARGET_CC="powerpc-linux-gnu-gcc"
-    - TARGET="powerpc-unknown-linux-gnu"
-    - BIN_NAME="pihole-FTL-powerpc-linux-gnu"
-    addons:
-      apt:
-        packages:
-        - gcc-powerpc-linux-gnu
-        - binutils-powerpc-linux-gnu
-        - libc6-dev-powerpc-cross
+#  - env:
+#    - TARGET_CC="powerpc-linux-gnu-gcc"
+#    - TARGET="powerpc-unknown-linux-gnu"
+#    - BIN_NAME="pihole-FTL-powerpc-linux-gnu"
+#    addons:
+#      apt:
+#        packages:
+#        - gcc-powerpc-linux-gnu
+#        - binutils-powerpc-linux-gnu
+#        - libc6-dev-powerpc-cross
   - env:
     - TARGET_CC="cc"
     - TARGET="i686-unknown-linux-gnu"
