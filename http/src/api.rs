@@ -6,7 +6,7 @@ use wrapper::{log, is_debug};
 
 #[get("/")]
 fn index() -> &'static str {
-    "Hello, world!"
+    "Hello world!"
 }
 
 #[no_mangle]
