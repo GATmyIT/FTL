@@ -1,15 +1,76 @@
 use libc;
+use std;
 use std::ffi::CString;
 
+//noinspection RsStaticConstNaming
 extern {
-    //noinspection RsStaticConstNaming
     static debug: bool;
+    static counters: Counters;
+    static blockingstatus: BlockingStatus;
+    static clients: *mut ClientData;
 
     fn logg(format: *const libc::c_char, ...);
 }
 
+#[repr(C)]
+#[allow(non_snake_case)]
+#[derive(Debug)]
+pub struct Counters {
+    pub queries: i32,
+    pub invalidqueries: i32,
+    pub blocked: i32,
+    pub wildcardblocked: i32,
+    pub cached: i32,
+    pub unknown: i32,
+    pub forwarded: i32,
+    pub clients: i32,
+    pub domains: i32,
+    pub queries_MAX: i32,
+    pub forwarded_MAX: i32,
+    pub clients_MAX: i32,
+    pub domains_MAX: i32,
+    pub overTime_MAX: i32,
+    pub gravity: i32,
+    pub overTime: i32,
+    pub IPv4: i32,
+    pub IPv6: i32,
+    pub PTR: i32,
+    pub SRV: i32,
+    pub wildcarddomains: i32,
+    pub forwardedqueries: i32
+}
+
+#[repr(C)]
+pub struct ClientData {
+    pub magic: u8,
+    pub count: i32,
+    pub ip: *mut libc::c_char,
+    pub name: *mut libc::c_char
+}
+
+#[repr(C)]
+pub enum BlockingStatus {
+    Disabled,
+    Enabled,
+    Unknown
+}
+
 pub fn is_debug() -> bool {
     unsafe { debug }
+}
+
+pub fn get_counters() -> &'static Counters {
+    unsafe { &counters }
+}
+
+pub fn get_clients() -> &'static [ClientData] {
+    unsafe {
+        std::slice::from_raw_parts(clients, counters.clients as usize)
+    }
+}
+
+pub fn get_blocking_status() -> &'static BlockingStatus {
+    unsafe { &blockingstatus }
 }
 
 pub fn log(msg: &str) {

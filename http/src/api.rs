@@ -3,11 +3,7 @@ use rocket::config::{Config, Environment, LoggingLevel};
 use std::thread;
 use std::error::Error;
 use wrapper::{log, is_debug};
-
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
+use stats;
 
 #[no_mangle]
 pub extern fn api_main() -> bool {
@@ -32,7 +28,11 @@ pub extern fn api_main() -> bool {
             return;
         }
 
-        rocket::custom(config.unwrap(), false).mount("/", routes![index]).launch();
+        rocket::custom(config.unwrap(), false)
+            .mount("/", routes![
+                stats::summary
+            ])
+            .launch();
 
         log("API stopped");
     }).is_ok()
