@@ -7,7 +7,7 @@ fn summary() -> Reply {
 
     let blocked = counters.blocked + counters.wildcardblocked;
     let total = counters.queries - counters.invalidqueries;
-    let percentage: f32 = if total > 0 { 100f32 * blocked as f32 / total as f32 } else { 0f32 };
+    let percentage = if total > 0 { 100f32 * blocked as f32 / total as f32 } else { 0f32 };
 
     let status = match *get_blocking_status() {
         BlockingStatus::Disabled => { "disabled" },
