@@ -57,7 +57,7 @@ $(ODIR)/%.o: %.c $(_DEPS) | $(ODIR)
 	$(CC) -c -o $@ $< -g3 $(CCFLAGS)
 
 $(HTTP_LIB): force
-	cd $(HTTP_DIR); RUSTFLAGS='-C codegen-units=16 -Z thinlto' CC=cc cargo build --release --target $(TARGET)
+	cd $(HTTP_DIR); PROC=$(nproc --all) RUSTFLAGS="-C codegen-units=$PROC -Z thinlto" CC=cc cargo build --release --target $(TARGET)
 
 $(ODIR):
 	mkdir -p $(ODIR)
