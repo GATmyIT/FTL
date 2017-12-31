@@ -81,7 +81,7 @@ matrix:
         - musl-tools
 before_script:
 - mkdir -p "${DEST_DIR}"
-- make clean
+- make clean-C
 script:
 - 'if [ "$TARGET" != "x86_64-unknown-linux-gnu" ]; then rustup target add "$TARGET"; fi'
 - make pihole-FTL CC="$TARGET_CC"
