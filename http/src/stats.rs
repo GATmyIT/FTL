@@ -2,7 +2,7 @@ use wrapper::{log, get_blocking_status, get_counters, get_clients, BlockingStatu
 use util::{Reply, reply_data};
 
 #[get("/stats/summary")]
-fn summary() -> Reply {
+pub fn summary() -> Reply {
     let counters = get_counters();
 
     let blocked = counters.blocked + counters.wildcardblocked;
