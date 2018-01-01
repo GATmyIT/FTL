@@ -30,7 +30,7 @@ pub extern fn api_main() -> bool {
 
         rocket::custom(config.unwrap(), false)
             .mount("/", routes![
-                stats::summary
+                stats::summary, stats::history
             ])
             .launch();
 
